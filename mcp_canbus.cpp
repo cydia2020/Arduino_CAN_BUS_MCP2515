@@ -835,6 +835,16 @@ byte MCP_CAN::sendMsgBuf(unsigned long id, byte ext, byte rtr, byte len, byte *b
 }
 
 /*********************************************************************************************************
+** Function name:           sendMsgBuf
+** Descriptions:            send buf
+*********************************************************************************************************/
+byte MCP_CAN::sendMsgBuf(unsigned long id, byte ext, byte len, byte *buf)
+{
+    setMsg(id, ext, len, buf);
+    return sendMsg(0);
+}
+
+/*********************************************************************************************************
 ** Function name:           readMsg
 ** Descriptions:            read message
 *********************************************************************************************************/
