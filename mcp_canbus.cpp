@@ -835,17 +835,6 @@ byte MCP_CAN::sendMsgBuf(unsigned long id, byte ext, byte rtr, byte len, byte *b
 }
 
 /*********************************************************************************************************
-** Function name:           sendMsgBuf
-** Descriptions:            send buf
-*********************************************************************************************************/
-byte MCP_CAN::sendMsgBuf(unsigned long id, byte ext, byte len, byte *buf)
-{
-    setMsg(id, ext, len, buf);
-    return sendMsg(0);
-}
-
-
-/*********************************************************************************************************
 ** Function name:           readMsg
 ** Descriptions:            read message
 *********************************************************************************************************/
@@ -858,12 +847,24 @@ byte MCP_CAN::readMsg()
     if(stat & MCP_STAT_RX0IF)                                        // Msg in Buffer 0
     {
         mcp2515_read_canMsg(MCP_RXBUF_0);
+
+        mcp2515_readRegister(MCP_CANINTF);
+    	  byte canintf = MCP_CANINTF;
+    	  canintf &= ~(1UL << 0);
+      	mcp2515_setRegister(MCP_CANINTF,canintf);
+
         mcp2515_modifyRegister(MCP_CANINTF, MCP_RX0IF, 0);
         res = CAN_OK;
     }
     else if(stat & MCP_STAT_RX1IF)                                   // Msg in Buffer 1
     {
         mcp2515_read_canMsg(MCP_RXBUF_1);
+
+        mcp2515_readRegister(MCP_CANINTF);
+      	byte canintf = MCP_CANINTF;	
+      	canintf &= ~(1UL << 1);	
+      	mcp2515_setRegister(MCP_CANINTF,canintf);
+
         mcp2515_modifyRegister(MCP_CANINTF, MCP_RX1IF, 0);
         res = CAN_OK;
     }
